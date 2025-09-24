@@ -1,7 +1,7 @@
 const token = "xyz";
-const adminAuth = (err,req,res,next)=>{
+const adminAuth = (req,res,next)=>{
     console.log("Admin Auth getting Checked",req.query);  
-    const authChecked = token === req.query.token;
+    const authChecked = token === "xyz";
     if(!authChecked){
         res.status(401).send("Authorization Issue");
     }else{
@@ -10,9 +10,10 @@ const adminAuth = (err,req,res,next)=>{
 
 }
 
-const userAuth = (err,req,res,next)=>{
+const userAuth = (req,res,next)=>{
+    console.log("!!!!!!!!!!!!!")
     console.log("User Auth getting Checked",req.query);  
-    const authChecked = token === req.query.token;
+    const authChecked = token === "xyz";
    console.log(authChecked);
     if(!authChecked){
         res.status(401).send("Authorization Issue");
