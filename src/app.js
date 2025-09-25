@@ -3,6 +3,8 @@ const express = require("express");
 
 const { adminAuth,userAuth } = require("./middlewares/authMiddleware");
 const { User } = require("./models/user");
+const { validateSignupData } = require("./utils/validation");
+const bcrypt = require('bcrypt');
 const app = express();
 
 // app.use("/users",(req,res,next)=>{
@@ -43,16 +45,53 @@ then((res)=>
       }); 
 })
 .catch((err)=>console.err);
+// vaidation of data
+//encrypt the password before storing it to database
 
 app.post("/signup",async (req,res)=>{
-     // console.log({req})
-  const newUser = req.body;
-  //newUser.time = new Date();
-   //console.log(newUser);
-   const insert = new User(newUser);
-   const p = await insert.save();
-   console.log(p);
-   res.status(200).send("User Signeup Succcessfully");
+      try{
+            validateSignupData(req);
+            const { firstName,lastName,emailId,password } = req.body;
+            const hashPassword = await bcrypt.hash(password,10);
+            
+            const insert = new User({
+                  firstName,
+                  lastName,
+                  emailId,
+                  password : hashPassword
+            });
+            const p = await insert.save();
+            console.log(p);
+            res.status(200).send("User Signeup Succcessfully");
+      }catch(err){
+            res.status(400).send("Error : "+ err.message)
+      }
+     
+})
+
+app.post("/login",async (req,res)=>{
+      try{
+           // validateSignupData(req);
+            const { emailId,password } = req.body;
+            const user = await User.findOne({
+                  emailId : emailId
+            })
+            if(!user){
+                  res.status(200).send("Email id is not present. Please Signup")
+            }else{
+                  hashPassword = user.password;
+            }
+            const isValidPassword = await bcrypt.compare(password,hashPassword);
+            if(isValidPassword){
+                  res.status(200).send("Login Successfully");
+            }else{
+                  res.status(400).send("In correct password!")
+            }
+            
+      }catch(err){
+            res.status(400).send("Error : "+ err.message)
+      }
+     
 })
 
 app.get("/users", async (req,res)=>{

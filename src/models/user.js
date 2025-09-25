@@ -1,5 +1,31 @@
 const { mongoose, Schema } = require("mongoose");
 
+const validator = require('validator');
+/*
+const manyValidators = [
+  { 
+    validator: function(string) {
+      // Custom validator to check for a minimum length
+      return string && string.length >= 5;
+    }, 
+    message: 'Username must be at least 5 characters long.'
+  },
+  { 
+    validator: function(string) {
+      // Custom validator to allow only letters
+      return /^[a-zA-Z]+$/.test(string);
+    }, 
+    message: 'Username can only contain letters.'
+  }
+];
+
+const userSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    validate: manyValidators // Pass the array of validator objects
+  }
+});
+*/
 const userSchema = new mongoose.Schema({
 
     "firstName":{
@@ -17,7 +43,7 @@ const userSchema = new mongoose.Schema({
         maxlength:30,
         validate: {
         validator: function(v) {
-            return v.includes("@");;
+            return validator.isEmail(v);
         },
         message: props => `${props.value} is not a valid email!`
         }
@@ -25,9 +51,13 @@ const userSchema = new mongoose.Schema({
     "password":{
         type : String,
         required:true,
-        lowercase:true   
-    },
-    
+        validate:{
+            validator: function(v) {
+            return validator.isStrongPassword(v);
+        },
+        message: props => `${props.value} is not a strong password`
+        }   
+    },  
     "age":{
         type : Number
     },
