@@ -1,10 +1,12 @@
 const { dbConnect } = require("./config/database")
 const express = require("express");
 
-const { adminAuth,userAuth } = require("./middlewares/authMiddleware");
+const { adminAuth,userAuth,Authentication } = require("./middlewares/authMiddleware");
 const { User } = require("./models/user");
 const { validateSignupData } = require("./utils/validation");
 const bcrypt = require('bcrypt');
+const cookieParser = require('cookie-parser');
+const jwt = require('jsonwebtoken');
 const app = express();
 
 // app.use("/users",(req,res,next)=>{
@@ -18,6 +20,7 @@ const app = express();
 //       res.send('Welcome to response users!');
 // });
 app.use(express.json());
+app.use(cookieParser());
 app.use("/admin",adminAuth);
 app.use("/users",userAuth);
 // app.use("/users",userAuth,(req,res)=>{
@@ -76,6 +79,7 @@ app.post("/login",async (req,res)=>{
             const user = await User.findOne({
                   emailId : emailId
             })
+            console.log({user})
             if(!user){
                   res.status(200).send("Email id is not present. Please Signup")
             }else{
@@ -83,7 +87,10 @@ app.post("/login",async (req,res)=>{
             }
             const isValidPassword = await bcrypt.compare(password,hashPassword);
             if(isValidPassword){
-                  res.status(200).send("Login Successfully");
+                  const  token = await user.getJwt();
+                  console.log(token)
+                  res.status(200).cookie('token',token).send("Login Successfully");
+
             }else{
                   res.status(400).send("In correct password!")
             }
@@ -94,9 +101,10 @@ app.post("/login",async (req,res)=>{
      
 })
 
-app.get("/users", async (req,res)=>{
-      const parameter = req.body.age;
+app.get("/users", Authentication,async (req,res)=>{
+     
       try{
+            const parameter = req.body.age;
             const p = await User.find({age:parameter})//findOne
             res.status(200).send(p);
       }catch(err){

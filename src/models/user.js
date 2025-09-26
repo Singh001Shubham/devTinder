@@ -1,6 +1,7 @@
 const { mongoose, Schema } = require("mongoose");
 
 const validator = require('validator');
+const jwt = require('jsonwebtoken');
 /*
 const manyValidators = [
   { 
@@ -72,7 +73,14 @@ const userSchema = new mongoose.Schema({
      "skills": {
         type : [String]
     }
-},{timestamps:true})
+},{timestamps:true});
+
+userSchema.methods.getJwt = async function(){
+  const user = this;
+  const token = await jwt.sign({_id:this._id}, '123',{expiresIn: '1h'});
+
+  return token;
+}
 const User = mongoose.model("User",userSchema);
 module.exports =  {
     User

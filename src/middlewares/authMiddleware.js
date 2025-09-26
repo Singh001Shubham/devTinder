@@ -1,3 +1,6 @@
+const { User } = require("../models/user");
+const cookieParser = require('cookie-parser');
+const jwt = require('jsonwebtoken');
 const token = "xyz";
 const adminAuth = (req,res,next)=>{
     console.log("Admin Auth getting Checked",req.query);  
@@ -24,7 +27,27 @@ const userAuth = (req,res,next)=>{
 
 }
 
+const Authentication = async(req,res,next) =>{
+try{
+      const { token } = req.cookies;
+      const decoded_token = await jwt.verify(token, '123');
+      if(!decoded_token){
+            throw new Error("Invalid Token")
+      } 
+      console.log({decoded_token});
+            const parameter = req.body.age;
+            const user = await User.findOne({'_id':decoded_token._id});
+            if(!user){
+                  throw new Error("User Does not exist");
+            }
+            next();
+      }catch(err){
+            res.status(400).send("something Went Wrong !");
+      }
+}
+
 module.exports = {
     adminAuth,
-    userAuth
+    userAuth,
+    Authentication
 }
