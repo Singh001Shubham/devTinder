@@ -31,18 +31,19 @@ const Authentication = async(req,res,next) =>{
 try{
       const { token } = req.cookies;
       const decoded_token = await jwt.verify(token, '123');
+      console.log({decoded_token});
       if(!decoded_token){
             throw new Error("Invalid Token")
       } 
       console.log({decoded_token});
-            const parameter = req.body.age;
             const user = await User.findOne({'_id':decoded_token._id});
             if(!user){
                   throw new Error("User Does not exist");
             }
+            req.User = user;
             next();
       }catch(err){
-            res.status(400).send("something Went Wrong !");
+            res.status(400).send("Error : "+ err.message);
       }
 }
 
