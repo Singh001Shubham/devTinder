@@ -17,9 +17,10 @@ conectionRouter.post("/request/:status/:toUserId",Authentication,async(req,res)=
            return res.status(400).send("Status not Alowed");
         }
 
-         const userExist = await User.findOne({toUserId})
-        if(userExist){
-            return res.status(400).send("User is noty on Dev Tinder");
+         const userExist = await User.findOne({'_id':toUserId});
+        // console.log({userExist});
+        if(!userExist){
+            return res.status(400).send("User is not on Dev Tinder");
         }
         const isPresent = await ConnectionRequest.findOne({
             $or : [
@@ -40,6 +41,37 @@ conectionRouter.post("/request/:status/:toUserId",Authentication,async(req,res)=
    }catch(err){
         res.status(400).send("Error : "+ err.message)
   }
+})
+
+conectionRouter.post("/request/review/:status/:connectionId",Authentication,async(req,res)=>{
+    try{
+        const status = req.params.status;
+        const connectionId = req.params.connectionId;
+        const loggedInId = req.User._id.toString();
+        console.log(status,connectionId,loggedInId);
+        const statusAllowed = ["Accepted","Rejected"];
+        if(!statusAllowed.includes(status)){
+            return res.status(400).send("status not allowed "+status)
+        }
+        const validOperation = await ConnectionRequest.findOne({
+            status : 'Interested',
+            toUserId : loggedInId,
+            _id : connectionId
+
+        })
+
+        if(!validOperation){
+            return res.status(400).send("Invalid Review "+connectionId);
+        }
+
+         ConnectionRequest.status = status;
+         console.log(ConnectionRequest.status);
+         const p = await ConnectionRequest.updateOne({_id:connectionId},{status:status});
+        // console.log({validOperation})
+        res.status(200).json({"message":"Requested "+status , "data" : p})
+    }catch(err){
+        res.status(400).send("Error : "+ err.message);
+    }
 })
 
 module.exports = {

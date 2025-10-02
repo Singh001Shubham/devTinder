@@ -64,3 +64,10 @@ rarely queried,
 have very low selectivity,
 
 updated frequently.
+
+
+map → “Give me one transformed result for each row.”
+
+filter → “Keep only the rows I care about.”
+
+reduce → “Combine all rows into one final result (could be an array, object, or number).”
