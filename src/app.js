@@ -8,6 +8,7 @@ const { adminAuth,userAuth,Authentication } = require("./middlewares/authMiddlew
 const cookieParser = require('cookie-parser');
 const jwt = require('jsonwebtoken');
 const app = express();
+const cors = require("cors");
 
 const { authRouter } = require('./routes/Auth');
 const { profileRouter } = require("./routes/Profile");
@@ -29,6 +30,10 @@ const { userRouter } = require("./routes/User");
 // });
 app.use(express.json());
 app.use(cookieParser());
+app.use(cors({
+      origin :"http://localhost:5173",
+      credentials : true
+}));
 app.use("/admin",adminAuth);
 app.use("/users",userAuth);
 // app.use("/users",userAuth,(req,res)=>{

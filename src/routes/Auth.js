@@ -8,16 +8,26 @@ const { User } = require("../models/user");
 authRouter.post("/signup",async (req,res)=>{
       try{
             validateSignupData(req);
-            const { firstName,lastName,emailId,password } = req.body;
+            const { firstName,lastName,emailId,password,age,gender } = req.body;
             const hashPassword = await bcrypt.hash(password,10);
             
             const insert = new User({
                   firstName,
                   lastName,
                   emailId,
-                  password : hashPassword
+                  password : hashPassword,
+                  age,
+                  gender
             });
             const p = await insert.save();
+             const  token = await p.getJwt();
+                  console.log(token)
+                  res.status(200).cookie('token',token, {
+                  httpOnly: true,
+                  secure: false,
+                  sameSite: "Lax",
+                  maxAge: 8 * 60 * 60 * 1000
+                  }).send(p);
             console.log(p);
             res.status(200).send("User Signeup Succcessfully");
       }catch(err){
@@ -35,7 +45,7 @@ authRouter.post("/login",async (req,res)=>{
             })
             console.log({user})
             if(!user){
-                  res.status(200).send("Email id is not present. Please Signup")
+                  res.status(401).send("Email id is not present. Please Signup")
             }else{
                   hashPassword = user.password;
             }
@@ -43,7 +53,12 @@ authRouter.post("/login",async (req,res)=>{
             if(isValidPassword){
                   const  token = await user.getJwt();
                   console.log(token)
-                  res.status(200).cookie('token',token).send("Login Successfully");
+                  res.status(200).cookie('token',token, {
+                  httpOnly: true,
+                  secure: false,
+                  sameSite: "Lax",
+                  maxAge: 8 * 60 * 60 * 1000
+                  }).send(user);
 
             }else{
                   res.status(400).send("In correct password!")

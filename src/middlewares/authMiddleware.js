@@ -1,5 +1,5 @@
 const { User } = require("../models/user");
-const cookieParser = require('cookie-parser');
+//const cookieParser = require('cookie-parser');
 const jwt = require('jsonwebtoken');
 const token = "xyz";
 const adminAuth = (req,res,next)=>{
@@ -29,11 +29,16 @@ const userAuth = (req,res,next)=>{
 
 const Authentication = async(req,res,next) =>{
 try{
+    //console.log(req.cookies)
       const { token } = req.cookies;
+      console.log({token})
+      if(!token){
+        return res.status(401).send("You are logged out");
+      }
       const decoded_token = await jwt.verify(token, '123');
-      console.log({decoded_token});
+      console.log({decoded_token},'Profile');
       if(!decoded_token){
-            throw new Error("Invalid Token")
+            return res.status(401).send("Please Login!");
       } 
       console.log({decoded_token});
             const user = await User.findOne({'_id':decoded_token._id});
