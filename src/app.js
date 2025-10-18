@@ -1,3 +1,4 @@
+require('dotenv').config()
 const { dbConnect } = require("./config/database")
 const express = require("express");
 
@@ -14,6 +15,7 @@ const { authRouter } = require('./routes/Auth');
 const { profileRouter } = require("./routes/Profile");
 const { conectionRouter } = require("./routes/Request");
 const { userRouter } = require("./routes/User");
+
 
 
 

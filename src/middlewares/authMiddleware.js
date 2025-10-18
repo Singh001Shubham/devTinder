@@ -35,7 +35,7 @@ try{
       if(!token){
         return res.status(401).send("You are logged out");
       }
-      const decoded_token = await jwt.verify(token, '123');
+      const decoded_token = await jwt.verify(token, process.env.SECRET_KEY);
       console.log({decoded_token},'Profile');
       if(!decoded_token){
             return res.status(401).send("Please Login!");
