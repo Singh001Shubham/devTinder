@@ -15,6 +15,7 @@ const { authRouter } = require('./routes/Auth');
 const { profileRouter } = require("./routes/Profile");
 const { conectionRouter } = require("./routes/Request");
 const { userRouter } = require("./routes/User");
+const { premiumRouter } = require("./routes/Premium");
 
 
 
@@ -46,6 +47,7 @@ app.use('/',authRouter);
 app.use('/',profileRouter);
 app.use('/',conectionRouter);
 app.use('/',userRouter);
+app.use('/',premiumRouter);
 // app.use("/request/review",conectionRouter);
 
 app.get("/admin/test",(req, res) => {// you can remove userAuth from here as it is getting checked in line 15 and 16
