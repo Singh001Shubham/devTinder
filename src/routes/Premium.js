@@ -43,7 +43,7 @@ premiumRouter.post("/premium/createOrder", Authentication , async (req,res)=>{
 
 premiumRouter.post("/premium/webhook", async(req,res)=>{
     try{
-        
+        console.log("ok")
        const webHookSignature = req.get('x-razorpay-signature');
         
        const isValidSignature = validateWebhookSignature(
