@@ -16,7 +16,7 @@ premiumRouter.post("/premium/createOrder", Authentication , async (req,res)=>{
             receipt: "order_rcptid_11",
             notes : {
                 firstName : req.User.firstName,
-                lastName :  req.User.lastName,
+                lastName :  req.User.lastName ? req.User.lastName : "Sirname",
                 memberShipType : req.body.memberShipType
             }
             });
