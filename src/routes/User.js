@@ -57,14 +57,12 @@ userRouter.get("/feeds", Authentication , async(req,res)=>{
                 { toUserId : loggedInUser }
             ]
         }).select("fromUserId toUserId");
-        console.log({ids})
         const set = new Set([]);
         ids.forEach((id)=>{
             set.add(id.toUserId.toString());
             set.add(id.fromUserId.toString());
         })
         const connectionIds = Array.from(set);
-        console.log({connectionIds});
         const feeds = await User.find({
             $and : [
                 { _id :{$nin : connectionIds} },

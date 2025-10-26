@@ -9,7 +9,7 @@ conectionRouter.post("/request/:status/:toUserId",Authentication,async(req,res)=
     const toUserId = req.params.toUserId;
     const status = req.params.status;
 
-    console.log(fromUserId,toUserId,status);
+    // console.log(fromUserId,toUserId,status);
     
    try{  
         const sendStatus = ["Interested","Ignored"];
@@ -48,7 +48,7 @@ conectionRouter.post("/request/review/:status/:connectionId",Authentication,asyn
         const status = req.params.status;
         const connectionId = req.params.connectionId;
         const loggedInId = req.User._id.toString();
-        console.log(status,connectionId,loggedInId);
+        //  console.log(status,connectionId,loggedInId);
         const statusAllowed = ["Accepted","Rejected"];
         if(!statusAllowed.includes(status)){
             return res.status(400).send("status not allowed "+status)
@@ -65,7 +65,7 @@ conectionRouter.post("/request/review/:status/:connectionId",Authentication,asyn
         }
 
          ConnectionRequest.status = status;
-         console.log(ConnectionRequest.status);
+        //  console.log(ConnectionRequest.status);
          const p = await ConnectionRequest.updateOne({_id:connectionId},{status:status});
         // console.log({validOperation})
         res.status(200).json({"message":"Requested "+status , "data" : p})

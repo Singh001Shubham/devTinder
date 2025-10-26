@@ -20,7 +20,7 @@ const profileEditData = (request)=>{
     const editFields = ["firstName","lastName","age","photo_url","gender","skills"];
     // console.log({editFields});
     const updateProfile = request.body;
-    console.log({updateProfile});
+    // console.log({updateProfile});
     const isUpdateAllowed = Object.keys(updateProfile).every((keys)=>{
        return editFields.includes(keys);
     })

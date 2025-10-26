@@ -51,7 +51,7 @@ premiumRouter.post("/premium/webhook", async(req,res)=>{
             webHookSignature,
             process.env.RAZORPAY_WEBHOOK_SECRET
         )
-        console.log(isValidSignature);
+        // console.log(isValidSignature);
         if(!isValidSignature){
             return res.status(400).send("Invalid Signature");
         }
@@ -74,7 +74,7 @@ premiumRouter.post("/premium/webhook", async(req,res)=>{
 
         return res.status(200).send(isValidSignature)
     }catch(err){
-        console.log(err.message);
+        // console.log(err.message);
         res.status(400).send("Error : "+err.message)
     }
 })

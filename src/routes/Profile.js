@@ -7,9 +7,9 @@ const { profileEditData } = require("../utils/validation");
 profileRouter.get('/profile',Authentication, async(req,res)=>{
     try{
         const parameter = req.User._id.toString();
-        console.log({parameter});
+      //   console.log({parameter});
         const p = await User.findOne({_id:parameter})
-         console.log({p});
+      //    console.log({p});
         res.status(200).send(p);
     }catch(err){
         res.status(400).send("Error : "+err.message)
@@ -23,7 +23,7 @@ profileRouter.patch('/profile/edit',Authentication, async(req,res)=>{
             throw new Error("Invalid update Request.")
         }
         const id = req.User._id.toString();
-        console.log({id})
+      //   console.log({id})
         Object.keys(req.body).forEach((key) => (req.User[key]=req.body[key]));
         //await req.User.save();
         const p =await User.findByIdAndUpdate(id,req.body,{runvalidators:true});//make validations fgor this api as any number of skills can be inserted here
@@ -37,9 +37,9 @@ profileRouter.get("/users", Authentication,async (req,res)=>{
      
       try{
             const parameter = req.body.userId;
-            console.log({parameter})
+            // console.log({parameter})
             const p = await User.find({})//findOne
-            console.log({p})
+            // console.log({p})
             res.status(200).send(p);
       }catch(err){
             res.status(400).send("Error : "+ err.message);

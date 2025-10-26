@@ -31,16 +31,16 @@ const Authentication = async(req,res,next) =>{
 try{
     //console.log(req.cookies)
       const { token } = req.cookies;
-      console.log({token})
+    //   console.log({token})
       if(!token){
         return res.status(401).send("You are logged out");
       }
       const decoded_token = await jwt.verify(token, process.env.SECRET_KEY);
-      console.log({decoded_token},'Profile');
+    //   console.log({decoded_token},'Profile');
       if(!decoded_token){
             return res.status(401).send("Please Login!");
       } 
-      console.log({decoded_token});
+    //   console.log({decoded_token});
             const user = await User.findOne({'_id':decoded_token._id});
             if(!user){
                   throw new Error("User Does not exist");

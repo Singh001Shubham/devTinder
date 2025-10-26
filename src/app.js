@@ -2,6 +2,7 @@ require('dotenv').config()
 const { dbConnect } = require("./config/database")
 const express = require("express");
 
+const { createServer } = require("http");
 const { adminAuth,userAuth,Authentication } = require("./middlewares/authMiddleware");
 
 
@@ -9,6 +10,7 @@ const { adminAuth,userAuth,Authentication } = require("./middlewares/authMiddlew
 const cookieParser = require('cookie-parser');
 const jwt = require('jsonwebtoken');
 const app = express();
+
 const cors = require("cors");
 
 const { authRouter } = require('./routes/Auth');
@@ -16,6 +18,8 @@ const { profileRouter } = require("./routes/Profile");
 const { conectionRouter } = require("./routes/Request");
 const { userRouter } = require("./routes/User");
 const { premiumRouter } = require("./routes/Premium");
+const { chatRouter } = require("./routes/Chat");
+const {initialiseSocket} = require("./utils/socket");
 
 
 
@@ -48,23 +52,27 @@ app.use('/',profileRouter);
 app.use('/',conectionRouter);
 app.use('/',userRouter);
 app.use('/',premiumRouter);
+app.use('/',chatRouter);
 // app.use("/request/review",conectionRouter);
 
-app.get("/admin/test",(req, res) => {// you can remove userAuth from here as it is getting checked in line 15 and 16
-      res.send('Welcome to the admin Page!');
-}); 
+// app.get("/admin/test",(req, res) => {// you can remove userAuth from here as it is getting checked in line 15 and 16
+//       res.send('Welcome to the admin Page!');
+// }); 
 
-app.get("/users/test",(req, res) => {// you can remove userAuth from here as it is getting checked in line 15 and 16
-      res.send('Welcome to the users homepage!');
-});// anything that matches after slash will come under this if you put it on top
+// app.get("/users/test",(req, res) => {// you can remove userAuth from here as it is getting checked in line 15 and 16
+//       res.send('Welcome to the users homepage!');
+// });// anything that matches after slash will come under this if you put it on top
 
+const server = createServer(app);
+initialiseSocket(server);
 
+console.log("server Created : "+ server);
 
 dbConnect().
 then((res)=>
 {
       console.log("connection established");
-      app.listen(3000,()=>{
+      server.listen(3000,()=>{
       console.log("Server is succesfully listening on port 3000.");
       }); 
 })
